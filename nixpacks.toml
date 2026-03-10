@@ -3,11 +3,11 @@ providers = ["php"]
 [variables]
 PHP_VERSION = "8.2"
 
+[phases.extensions]
+cmds = ["install-php-extensions gd ctype curl dom fileinfo filter hash mbstring openssl pcre pdo pdo_mysql session tokenizer xml"]
+
 [phases.install]
-cmds = [
-    "apt-get install -y libgd-dev || true",
-    "composer update --no-dev --optimize-autoloader"
-]
+cmds = ["composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=ext-gd"]
 
 [start]
 cmd = "php artisan config:cache && php artisan route:cache && php -S 0.0.0.0:$PORT -t public"
