@@ -4,26 +4,21 @@ providers = ["php"]
 PHP_VERSION = "8.2"
 
 [phases.setup]
-aptPkgs = ["libgd-dev", "libpng-dev", "libjpeg-dev", "libwebp-dev"]
+aptPkgs = ["libgd-dev", "libpng-dev", "libjpeg-dev"]
 
 [phases.extensions]
 dependsOn = ["setup"]
-cmds = ["install-php-extensions gd pdo pdo_mysql mbstring tokenizer xml ctype curl dom fileinfo openssl"]
+cmds = ["install-php-extensions gd pdo pdo_mysql mbstring tokenizer xml ctype curl dom fileinfo openssl zip"]
 
 [phases.install]
 dependsOn = ["extensions"]
-cmds = ["composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=ext-gd"]
+cmds = ["composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs"]
 
 [phases.build]
 dependsOn = ["install"]
 cmds = [
-    "mkdir -p storage/framework/sessions",
-    "mkdir -p storage/framework/views",
-    "mkdir -p storage/framework/cache",
-    "mkdir -p storage/logs",
-    "mkdir -p bootstrap/cache",
-    "chmod -R 777 storage",
-    "chmod -R 777 bootstrap/cache"
+    "mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache",
+    "chmod -R 777 storage bootstrap/cache"
 ]
 
 [start]
