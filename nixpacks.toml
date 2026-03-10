@@ -1,25 +1,5 @@
-providers = ["php"]
-
-[variables]
-PHP_VERSION = "8.2"
-
-[phases.setup]
-aptPkgs = ["libgd-dev", "libpng-dev", "libjpeg-dev"]
-
-[phases.extensions]
-dependsOn = ["setup"]
-cmds = ["install-php-extensions gd pdo pdo_mysql mbstring tokenizer xml ctype curl dom fileinfo openssl zip"]
-
 [phases.install]
-dependsOn = ["extensions"]
 cmds = ["composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs"]
-
-[phases.build]
-dependsOn = ["install"]
-cmds = [
-    "mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache",
-    "chmod -R 777 storage bootstrap/cache"
-]
 
 [start]
 cmd = "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php -S 0.0.0.0:$PORT -t public"
