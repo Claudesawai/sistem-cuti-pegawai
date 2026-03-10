@@ -18,6 +18,12 @@ RUN apt-get update && apt-get install -y \
 # 3. Install ekstensi PHP
 RUN docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
 
+# ==========================================================
+# TAMBAHKAN BARIS DI BAWAH INI (INI ADALAH KOMPORNYA)
+# ==========================================================
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# ==========================================================
+
 # 4. FIX RADIKAL: Hapus semua config mpm selain prefork secara fisik
 RUN rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf && \
     rm -f /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf && \
@@ -30,10 +36,9 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # 7. Copy file konfigurasi dependency (Optimasi Cache)
-# Dengan menyalin ini duluan, 'composer install' tidak akan lari ulang jika hanya kode program yang berubah
 COPY composer.json composer.lock ./
 
-# 8. Install dependensi (Tanpa dev untuk produksi, hapus --no-dev jika untuk staging/dev)
+# 8. Sekarang perintah ini tidak akan error lagi karena sudah ada kompornya
 RUN composer install --no-scripts --no-autoloader --ansi --no-interaction
 
 # 9. Copy seluruh file project
