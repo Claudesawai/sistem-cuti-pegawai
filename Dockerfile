@@ -15,12 +15,14 @@ RUN apt-get update && apt-get install -y \
     curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 3. Konfigurasi dan Install ekstensi PHP
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
+# 3. Install ekstensi PHP
+RUN docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
 
-# 4. Pastikan hanya satu MPM yang aktif (Perbaikan untuk error AH00534)
-RUN a2dismod mpm_event || true && a2enmod mpm_prefork
+# 4. FIX KHUSUS: Matikan mpm_event secara paksa dan nyalakan mpm_prefork
+# Ini akan menghapus file config mpm_event agar tidak bisa loading sama sekali
+RUN a2dismod mpm_event || true && \
+    rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf || true && \
+    a2enmod mpm_prefork rewrite
 
 # 5. Aktifkan mod_rewrite Apache
 RUN a2enmod rewrite
