@@ -1,1 +1,1 @@
-web: php artisan migrate --force && php artisan config:cache && php -S 0.0.0.0:$PORT -t public
+web: php artisan config:cache && php -S 0.0.0.0:$PORT -t public
