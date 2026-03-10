@@ -4,7 +4,10 @@ providers = ["php"]
 PHP_VERSION = "8.2"
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader"]
+cmds = [
+    "apt-get install -y libgd-dev || true",
+    "composer update --no-dev --optimize-autoloader"
+]
 
 [start]
 cmd = "php artisan config:cache && php artisan route:cache && php -S 0.0.0.0:$PORT -t public"
