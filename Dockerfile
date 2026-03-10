@@ -18,10 +18,9 @@ RUN apt-get update && apt-get install -y \
 # 3. Install ekstensi PHP
 RUN docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
 
-# 4. FIX KHUSUS: Matikan mpm_event secara paksa dan nyalakan mpm_prefork
-# Ini akan menghapus file config mpm_event agar tidak bisa loading sama sekali
-RUN a2dismod mpm_event || true && \
-    rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf || true && \
+# 4. FIX RADIKAL: Hapus semua config mpm selain prefork secara fisik
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf && \
+    rm -f /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf && \
     a2enmod mpm_prefork rewrite
 
 # 5. Aktifkan mod_rewrite Apache
