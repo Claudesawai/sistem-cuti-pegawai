@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
 
-# 4. Ambil Composer terbaru dari image resmi
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# 4. Pastikan hanya satu MPM yang aktif (Perbaikan untuk error AH00534)
+RUN a2dismod mpm_event || true && a2enmod mpm_prefork
 
 # 5. Aktifkan mod_rewrite Apache
 RUN a2enmod rewrite
