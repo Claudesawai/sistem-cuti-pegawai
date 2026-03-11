@@ -1,8 +1,5 @@
 FROM php:8.2-apache
 
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
-    /etc/apache2/mods-enabled/mpm_event.conf
-
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -13,9 +10,11 @@ RUN apt-get update && apt-get install -y \
     zip unzip git curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql mbstring tokenizer xml ctype fileinfo zip opcache \
-    && a2enmod mpm_prefork rewrite \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN a2dismod mpm_event mpm_worker || true \
+    && a2enmod mpm_prefork rewrite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
