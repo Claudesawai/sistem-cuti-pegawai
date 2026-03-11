@@ -43,18 +43,3 @@ RUN php artisan config:cache || true \
     && php artisan route:cache || true
 
 EXPOSE 80
-```
-
-Simpan — **Ctrl+S**
-
----
-
-### 2. Hapus file `Procfile` kalau masih ada
-Klik kanan → Delete
-
----
-
-### 3. Tambah Variable di Railway
-Klik service **sistem-cuti-pegawai** → tab **Variables** → tambah:
-```
-APACHE_DOCUMENT_ROOT = /var/www/html/public
