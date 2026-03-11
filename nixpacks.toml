@@ -1,17 +1,14 @@
 [variables]
-PHP_VERSION = "8.2"
-PHP_EXTENSIONS = "gd,pdo,pdo_mysql,mbstring,tokenizer,xml,ctype,fileinfo,zip,opcache"
+PHP_VERSION = "8.3"
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader --ignore-platform-reqs"]
+cmds = ["composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs"]
 
 [phases.build]
 cmds = [
   "mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache",
-  "chmod -R 777 storage bootstrap/cache",
-  "php artisan config:cache",
-  "php artisan route:cache"
+  "chmod -R 777 storage bootstrap/cache"
 ]
 
 [start]
-cmd = "php artisan migrate --force && php -S 0.0.0.0:$PORT -t public"
+cmd = "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php -S 0.0.0.0:$PORT -t public"
